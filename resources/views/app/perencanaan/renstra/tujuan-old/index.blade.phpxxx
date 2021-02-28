@@ -1,0 +1,87 @@
+@extends('layouts.template')
+
+@section('content')
+
+
+<div class="box box-default" style="padding: 15px;">
+                     
+    
+    <h3> Tujuan RPJMD  &nbsp;
+      @if(Auth::user()->level == 1)
+        <a href="tujuan_renstra/create"><button class="btn btn-primary">Tambah</button></a>
+      @endif
+    </h3>
+    <h4>Periode 2016-2021</h4>
+  <form action="{{url('tujuan_renstra/dataRenstra')}}" method="POST">
+    {{ csrf_field() }}
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="col-md-4">
+              <select class="form-control select2" name="organisasi_no" id="organisasi_no">
+            <option value="">--Pilih OPD--</option>
+            @foreach($opd as $data)
+            <option value="{{$data->organisasi_no}}">{{$data->organisasi_nama}}</option>
+            @endforeach
+              </select>
+            </div>
+
+    {{-- <button class="btn btn-warning">Cari</button> --}}
+
+          </div>
+    </div>
+</form>
+
+
+<br>
+	<div class="table-responsive">
+		<table class="table table-responsive">
+			<thead>
+				
+			
+			<tr style="background-color: salmon;">
+        <th>Misi</th>
+        <th colspan="2">No / Tujuan</th>
+			</tr>
+			</thead>
+			<tbody>
+      @foreach($misi as $m)
+              <tr>
+                <td colspan="3" style="font-weight: bold; background-color: #7eeaff;">{{ $m ? $m ['nama'] : '' }}</td>
+              </tr>
+        <?php 
+        $tujuan = App\Models\TujuanRenstra::where('tujuan.organisasi_no', $m ['organisasi_no'])
+        ->orderBy('tujuan_nomor')
+        // ->groupBy('')
+        ->get()
+        ?>
+			@foreach($tujuan as $t)
+      @if($m ['nomor']==$t->visi_misi_nomor)
+							<tr>
+
+                <td></td>
+                <td>{{$t ->tujuan_nomor}}</td>
+                <td>{{$t ->tujuan_nama}}</td>
+							</tr>
+      @endif
+      @endforeach 
+			@endforeach 
+		  </tbody>
+      </table>
+                    
+	</div>
+
+
+                     
+             
+</div>
+@stop
+
+ @push('scripts')
+ <script>
+ $('#organisasi_no').on('change', function(){
+  $(this).closest('form').submit();
+ });
+ </script>
+ @endpush
+

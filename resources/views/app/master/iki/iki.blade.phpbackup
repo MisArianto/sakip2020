@@ -1,0 +1,119 @@
+@extends('layouts.template')
+
+@section('content')
+
+<div class="container">
+	<div class="panel-body1">
+		<form action="{{ url('dataRequest') }}" method="POST">
+			{{ csrf_field() }}
+			<div class="row">
+				<div class="col-md-12">
+
+					<h4>Indikator Kinerja Individu Pegawai Tahun {{ date('Y') }}</h4>
+					<div class="col-md-3">
+						<select class="form-control select2" name="id_pegawai" id="id_pegawai">
+							<option value="">--pilih Pegawai--</option>
+							@foreach($pegawais as $pegawai)
+							<option value="{{$pegawai->id}}">{{$pegawai->nama}}</option>
+							@endforeach
+						</select>
+					</div>
+					
+					<div class="col-md-2">
+						<select class="form-control select2" name="tahun" id="tahun">
+							<option value="">--pilih Tahun--</option>
+							<option value="2017">2017</option>
+							<option value="2018">2018</option>
+							<option value="2019">2019</option>
+							<option value="2020">2020</option>
+							<option value="2021">2021</option>
+						</select>
+					</div>
+
+				</div>
+			</div>
+			
+		</form>
+
+			<br>
+
+			<table>
+				<tr>
+					<td>Nama Pegawai</td>
+					<td>:</td>
+					<td>{{ $pegawai ? $pegawai['nama_pegawai'] : '' }}</td>
+				</tr>
+				<tr>
+					<td>Jabatan</td>
+					<td>:</td>
+					<td>{{  $pegawai ? $pegawai['jabatan_pegawai'] : '' }}</td>
+				</tr>
+				<tr>
+					<td>Nama Pimpinan</td>
+					<td>:</td>
+					<td>{{ $pimpinan ? $pimpinan['nama_pimpinan'] : '' }}</td>
+				</tr>
+				<tr>
+					<td>Jabatan Pimpinan</td>
+					<td>:</td>
+					<td>{{ $pimpinan ? $pimpinan['jabatan_pimpinan'] : '' }}</td>
+				</tr>
+			</table>
+
+			<br>
+
+
+			<a href="{{ url('iki/create') }}" class="btn btn-success"> Add</a>
+
+
+			<br>
+
+			<h4>Indikator Kinerja Individu</h4>
+
+			<div class="table-responsive">
+				<table class="table table-hover table-striped">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Sasaran Strategis</th>
+							<th>Satuan</th>
+							<th>Target</th>
+						</tr>
+					</thead>
+					<body>
+						@foreach($kips as $kip)
+						<tr>
+							<td>{{ $no++ }}</td>
+							<td>{{ $kip->sasaran_strategis }}</td>
+							<td>{{ $kip->satuan_nama }}</td>
+							<td>{{ $kip->target }}</td>
+						</tr>
+						@endforeach
+					</body>
+				</table>
+			</div>
+			
+				
+	</div>
+</div>
+
+
+@endsection
+
+
+@push('scripts')
+
+<script>
+
+	$('#tahun').prop('disabled', true);
+
+	$('#id_pegawai').on('change', function(){
+		$('#tahun').prop('disabled', false);
+	});
+
+	$('#tahun').on('change', function(){
+		$(this).closest('form').submit();
+	});
+</script>
+
+@endpush
